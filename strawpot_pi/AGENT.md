@@ -18,8 +18,7 @@ metadata:
     params:
       model:
         type: string
-        default: claude-sonnet-4-6
-        description: Model to use for Pi coding agent
+        description: Model override (omit to use pi CLI default)
       dangerously_skip_permissions:
         type: boolean
         default: true

@@ -74,7 +74,7 @@ Pass via `--config`:
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| `model` | string | `claude-sonnet-4-6` | Model to use |
+| `model` | string | _(none)_ | Model override (omit to use pi CLI default) |
 | `dangerously_skip_permissions` | boolean | `true` | Pi auto-approves in non-interactive (`-p`) mode — this flag is accepted for protocol compatibility. |
 
 ### Environment variables
