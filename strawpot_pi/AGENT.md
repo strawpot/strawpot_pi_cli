@@ -10,6 +10,8 @@ metadata:
       macos: curl -fsSL https://raw.githubusercontent.com/strawpot/strawpot_pi_cli/main/strawpot_pi/install.sh | sh
       linux: curl -fsSL https://raw.githubusercontent.com/strawpot/strawpot_pi_cli/main/strawpot_pi/install.sh | sh
     tools:
+      npm:
+        description: Node.js package manager (https://nodejs.org)
       pi:
         description: Pi Coding Agent
         install:
