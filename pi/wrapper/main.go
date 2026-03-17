@@ -39,31 +39,41 @@ func main() {
 // ---------------------------------------------------------------------------
 
 func cmdSetup() {
+	// 1. Check if pi CLI exists; if not, try to install it.
 	piPath, err := exec.LookPath("pi")
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error: pi CLI not found on PATH.")
-		fmt.Fprintln(os.Stderr, "Install it with: npm install -g @mariozechner/pi-coding-agent")
-		os.Exit(1)
-	}
-
-	fmt.Fprintln(os.Stderr, "Starting Pi CLI login...")
-	fmt.Fprintln(os.Stderr, "If a browser window does not open, copy the URL from the output below.")
-	fmt.Fprintln(os.Stderr)
-
-	cmd := exec.Command(piPath, "login")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	// Inherit full environment so DISPLAY/WAYLAND_DISPLAY are available
-	// for browser opening on Linux.
-	cmd.Env = os.Environ()
-
-	if err := cmd.Run(); err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			os.Exit(exitErr.ExitCode())
+		fmt.Fprintln(os.Stderr, "Pi CLI not found. Installing via npm...")
+		install := exec.Command("npm", "install", "-g", "@mariozechner/pi-coding-agent")
+		install.Stdin = os.Stdin
+		install.Stdout = os.Stdout
+		install.Stderr = os.Stderr
+		install.Env = os.Environ()
+		if installErr := install.Run(); installErr != nil {
+			fmt.Fprintln(os.Stderr, "Failed to install Pi CLI.")
+			fmt.Fprintln(os.Stderr, "Install it manually: npm install -g @mariozechner/pi-coding-agent")
+			os.Exit(1)
 		}
-		os.Exit(1)
+		piPath, err = exec.LookPath("pi")
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Pi CLI still not found after install.")
+			os.Exit(1)
+		}
 	}
+
+	// 2. Pi CLI has no standalone login command — auth happens inside the
+	//    interactive REPL via /login.  Instruct the user to configure in
+	//    a separate terminal.
+	fmt.Fprintln(os.Stderr, "Pi CLI found at:", piPath)
+	fmt.Fprintln(os.Stderr)
+	fmt.Fprintln(os.Stderr, "To authenticate, open a new terminal and run:")
+	fmt.Fprintln(os.Stderr)
+	fmt.Fprintln(os.Stderr, "  pi")
+	fmt.Fprintln(os.Stderr)
+	fmt.Fprintln(os.Stderr, "Complete the login setup, then type /exit to close Pi.")
+	fmt.Fprintln(os.Stderr)
+	fmt.Fprint(os.Stderr, "Press Enter here when done...")
+	buf := make([]byte, 1)
+	os.Stdin.Read(buf)
 }
 
 // ---------------------------------------------------------------------------
